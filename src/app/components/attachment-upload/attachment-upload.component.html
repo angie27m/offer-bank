@@ -1,0 +1,39 @@
+<!-- Estado Inicial para cargar -->
+<span *ngIf="showTitle==true" class="subtitle font-weight-semibold d-inline-block mt-20 mb-10">{{'common.upload_attachment_desc' | translate}}<span class="subtitle-hint font-weight-normal">- {{'common.optional' | translate}}</span></span>
+<div *ngIf="!getAttachmentResult()">
+	<input [id]="attachmentControlName" type="file" name="attachment" (change)="onUploadFile($event)" style="visibility: hidden;" accept="{{getAllowedFilesExtensions()}}"/>
+
+	<div>
+		<div class="attachment-box-add">
+			<a (click)="openInput()">
+				<div>
+					<div class="d-flex align-items-center justify-content-center py-2">
+						<mat-icon class="upload-icon">file_upload</mat-icon>
+						<span class="fw-bold">
+							{{ 'common.select_file' | translate }}	
+						</span>
+						<mat-spinner *ngIf="inProgress" class="ms-3" [diameter]="20"></mat-spinner>
+					</div>
+				</div>
+			</a>
+		</div>
+	</div>
+	<div class="mt-2">
+		<span *ngIf="listAllowFiles; else CustomTextUpload" class="text-muted">
+			{{'common.allowed_file_types_custom_1' | translate}}  {{getAllowedFilesExtensions()}} {{'common.allowed_file_types_custom_2' | translate}} {{sizeAllow}} {{sizeTypeAllow}}
+		</span>
+		<ng-template #CustomTextUpload>
+			<span class="text-muted">
+				{{'common.allowed_file_types' | translate}}
+			</span>
+		</ng-template>
+
+	</div>
+	<mat-error *ngIf="fileControl.invalid">{{getErrorMessage(fileControl)}}</mat-error>
+</div>
+<!-- Fin - Estado Inicial para cargar -->
+
+<!-- Estado archivo adjunto ya ha sido cargado -->
+<app-attachment-download [attachment]="getAttachmentResult()" [attachmentFormGroup]="attachmentFormGroup"
+	[attachmentControlName]="attachmentControlName"></app-attachment-download>
+<!-- Fin - Estado archivo adjunto ya ha sido cargado -->

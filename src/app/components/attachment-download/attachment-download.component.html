@@ -1,0 +1,17 @@
+<!-- ADJUNTO -->
+<div *ngIf="attachment" class="attachment-box">
+  <div>
+    <div class="px-10">
+      <div class="d-flex flex-wrap align-items-center">
+        <div class="d-inline-block my-2 pl-5 w-attachment-file" [matTooltip]="attachment.name" matTooltipPosition="above">
+          <span class="w-100 text-left d-block font-weight-bold m-0 text-truncate">
+            <a href="https://storage-angular-s3.s3.amazonaws.com/{{attachment.url.replace('storage-angular-s3/','')}}" target="_blank">{{attachment.name}}</a>
+          </span>
+          <span class="font-muted m-0"> {{attachment.size/1000}} KB</span>
+        </div>
+        <a *ngIf="canRemoveAttachment()" (click)="onRemoveAttachment()" style="cursor:pointer"><mat-icon class='material-icons'>close</mat-icon></a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ADJUNTO FIN -->

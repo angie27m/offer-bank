@@ -1,0 +1,72 @@
+.status-img {
+    max-width: 600px;
+}
+
+.company-img {
+    width: 200px;
+}
+
+.form-card {
+    border: 1px solid lightgray;
+    border-left: 13px solid  var(--primary);
+    margin-bottom: 30px;
+}
+
+.experience-radio-group {
+    display: flex;
+    flex-direction: column;
+    .mat-radio-button {
+        margin: 10px 0px;
+    }
+}
+
+/* Clases de Angular Material para todos los componentes */
+::ng-deep {
+    /* Borde de los inputs cuando estan seleccionados */
+    .mat-form-field.mat-focused .mat-form-field-ripple {
+        background-color: var(--primary);
+    }
+    /* radio buttons */
+    .mat-radio-button.mat-radio-checked .mat-radio-inner-circle {
+        background-color: var(--primary);
+    }
+    .mat-radio-button.mat-radio-checked .mat-radio-outer-circle {
+        border-color: var(--primary) !important;
+    }
+    .mat-radio-button .mat-radio-ripple .mat-ripple-element {
+        background-color: var(--primary) !important;
+    }
+    /* Buttons */
+    .mat-button-base {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+    .mat-button {
+        color: var(--primary);
+    }
+    .mat-flat-button {
+        background-color: var(--primary) !important;
+        min-width: 100px !important;
+    }
+    .mat-flat-button.mat-button-disabled {
+        background-color: #CCC !important; 
+    }
+    /* Chips */
+    .mat-chip.mat-standard-chip {
+        background-color: #FFF !important;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        font-weight: bold;
+    }
+    .mat-chip.mat-standard-chip.mat-chip-selected {
+        background-color: var(--primary) !important;
+    }
+    /* Checkbox */
+    .mat-checkbox-checked .mat-checkbox-ripple .mat-ripple-element, .mat-checkbox .mat-checkbox-ripple .mat-ripple-element {
+        background: var(--primary) !important;
+    }
+    .mat-checkbox-checked .mat-checkbox-background {
+        background-color: var(--primary) !important;
+    }
+
+}

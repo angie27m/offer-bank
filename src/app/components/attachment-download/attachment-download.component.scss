@@ -1,0 +1,12 @@
+.attachment-box {
+    background: #FAFAFA;
+    border: 2px solid #E0E0E0;
+    border-radius: 0.25rem;
+    img { 
+        width: 20px;
+        height: 22px;
+    }
+}
+.w-attachment-file{
+    width: calc(100% - 55px);
+}

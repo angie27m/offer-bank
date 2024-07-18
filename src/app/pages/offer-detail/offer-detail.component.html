@@ -1,0 +1,386 @@
+<!-- Cargando datos -->
+<div class="container p-4" *ngIf="loadData">
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            <!-- spinner de carga -->
+            <mat-spinner id="spinnerLoader" [diameter]="50"></mat-spinner>
+        </div>
+    </div>
+</div>
+
+<!-- Cuando la oferta consultada no existe -->
+<div class="container p-4" *ngIf="!vacant && !loadData">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 d-flex justify-content-center flex-column text-center">
+            <h2 class="font-color-primary">{{ 'recruiting.vacancy_not_found_title' | translate }}</h2>
+            <h2>{{ 'recruiting.postulation_not_found' | translate }}</h2>
+        </div>
+        <div class="col-12 col-md-8 d-flex justify-content-center">
+            <img src="/assets/imgs/status/vacancy-not-found.svg" alt="Banco de ofertas Acsendo" class="status-img">
+        </div>
+    </div>
+</div>
+
+<!-- Mensaje de exito al postularse -->
+<div class="container p-4" *ngIf="postulationSended">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 d-flex justify-content-center flex-column text-center">
+            <h2 class="font-color-primary">{{ 'recruiting.congratulations' | translate }}</h2>
+            <h2>{{ 'recruiting.postulation_sended'  | translate }}</h2>
+        </div>
+        <div class="col-12 col-md-8 d-flex justify-content-center">
+            <img src="/assets/imgs/status/postulated.svg" alt="Banco de ofertas Acsendo" class="status-img">
+        </div>
+    </div>
+</div>
+
+<!-- Cuando la oferta consultada ya fue cerrada -->
+<div class="container p-4" *ngIf="vacant && !loadData && postulationClosed">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 d-flex justify-content-center flex-column text-center">
+            <h2 class="font-color-primary">¡Oops!</h2>
+            <h2>{{ 'recruiting.no_available_vacancy' | translate }}</h2>
+        </div>
+        <div class="col-12 col-md-8 d-flex justify-content-center">
+            <img src="/assets/imgs/status/no-available-vacancy.svg" alt="Banco de ofertas Acsendo" class="status-img">
+        </div>
+    </div>
+</div>
+
+<!-- Contenedor de la info de la oferta laboral -->
+<div class="container p-4" *ngIf="vacant && !loadData && !postulationSended && !postulationClosed">
+    <!-- Oferta Laboral -->
+    <div class="row justify-content-center">
+        <!-- Imagen de la empresa -->
+        <div class="col-12 col-md-8" *ngIf="vacant.showCompanyInfo">
+            <img src="{{environmentUrl}}/logo?companyId={{vacant.company.id}}" class="rounded mx-auto d-block company-img" alt="imagen">
+        </div>
+        <!-- Titulo -->
+        <div class="col-12 text-center mt-5">
+            <h4 class="fw-bold">{{ 'recruiting.vacancy_info' | translate }}</h4>
+        </div>
+        <!-- Info de la vacante -->
+        <div class="col-12 col-md-10 col-lg-8 mt-5">
+            <div class="row">
+                <!-- Nombre -->
+                <div class="col-12 col-md-8">
+                    <p><span class="fw-bold me-3">{{ 'recruiting.vacancy_name' | translate | uppercase }}: </span> {{ vacant.name }}</p>
+                </div>
+                <!-- ID -->
+                <div class="col-12 col-md-4">
+                    <p><span class="fw-bold me-3">{{ 'recruiting.vacancy_id' | translate | uppercase | slice:0:2 }}: </span> {{ vacant.vacantInternId }}</p>
+                </div>
+                <!-- Descripcion -->
+                <div class="col-12">
+                    <p class="fw-bold">{{ 'recruiting.job_description' | translate | uppercase }}</p>
+                    <p [innerHTML]="vacant.descriptionJob"></p>
+                </div>
+                <!-- Educacion y formacion -->
+                <div class="col-12">
+                    <p class="fw-bold">{{ 'recruiting.education' | translate | uppercase }}</p>
+                    <p [innerHTML]="vacant.educationTraining"></p>
+                </div>
+                <!-- Funciones especificas -->
+                <div class="col-12">
+                    <p class="fw-bold">{{ 'recruiting.functions' | translate | uppercase }}</p>
+                    <p [innerHTML]="vacant.specificFunctions"></p>
+                </div>
+                <!-- Experiencia -->
+                <div class="col-12 col-md-6">
+                    <p class="fw-bold">{{ 'recruiting.experience' | translate | uppercase }}</p>
+                    <p [innerHTML]="vacant.experience | experience | translate"></p>
+                </div>
+                <!-- Tipo de contrato -->
+                <div class="col-12 col-md-6">
+                    <p class="fw-bold">{{ 'recruiting.contract_type' | translate | uppercase }}</p>
+                    <p [innerHTML]="vacant.contractType | contractType | translate"></p>
+                </div>
+                <!-- Habilidades -->
+                <div class="col-12">
+                    <p class="fw-bold">{{ 'recruiting.skills' | translate | uppercase }}</p>
+                    <p>{{ getSkillsText() }}</p>
+                </div>
+                <!-- Items extra -->
+                <div class="col-12" *ngFor="let item of vacant.items">
+                    <div *ngIf="!item.needResponse">
+                        <p class="fw-bold">{{ item.name | uppercase }}</p>
+                        <p [innerHTML]="item.description"></p>
+                    </div>
+                </div>
+            </div>
+            <mat-divider class="mr-15"></mat-divider> 
+        </div>
+
+    </div>
+    <!-- Formulario de aplicacion -->
+    <div class="row justify-content-center">
+        <!-- Titulo -->
+        <div class="col-12 col-md-8 text-center mt-5">
+            <h4 class="fw-bold">{{ 'recruiting.application_form' | translate }}</h4>
+        </div>
+        <!-- Formulario -->
+        <div class="col-12 col-md-10 col-lg-8 mt-5">
+            <form [formGroup]="postulationForm">
+                <!-- Informacion de contacto -->
+                <mat-card class="ps-lg-5 form-card">
+                    <mat-card-content>
+                        <p class="fw-bold"><span class="text-danger">*</span> {{ 'recruiting.contact_info' | translate }}</p>
+                    </mat-card-content>
+                    <mat-card-content class="ms-lg-3">
+                        <!-- nombre -->
+                        <div class="w-100">
+                            <div class="fw-bold">{{ 'recruiting.complete_name' | translate }}</div>
+                            <mat-form-field class="w-100" appearance="standard">
+                                <input matInput type="text" id="name" formControlName="name" minlength="3" maxlength="100" placeholder="{{ 'recruiting.complete_name_placeholder' | translate }}"/>
+                                <mat-error *ngIf="postulationForm.invalid">{{getErrorMessage(postulationForm.get('name'))}}</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <!-- telefono de contacto -->
+                        <div class="w-100">
+                            <div class="fw-bold">{{ 'recruiting.contact_number' | translate }}</div>
+                            <mat-form-field class="w-100" appearance="standard">
+                                <input matInput type="text" id="mobile" formControlName="mobile" minlength="7" maxlength="20" placeholder="{{ 'recruiting.contact_number_placeholder' | translate }}"/>
+                                <mat-error *ngIf="postulationForm.invalid">{{getErrorMessage(postulationForm.get('mobile'))}}</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <!-- Correo -->
+                        <div class="w-100">
+                            <div class="fw-bold">{{ 'recruiting.email' | translate }}</div>
+                            <mat-form-field class="w-100" appearance="standard">
+                                <input matInput type="email" id="email" formControlName="email" maxlength="100" placeholder="{{ 'recruiting.email_placeholder' | translate }}"/>
+                                <mat-error *ngIf="postulationForm.invalid">{{getErrorMessage(postulationForm.get('email'))}}</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <!-- Profesión -->
+                        <div class="w-100">
+                            <div class="fw-bold">{{ 'recruiting.profession' | translate }}</div>
+                            <mat-form-field class="w-100" appearance="standard">
+                                <input matInput type="text" id="profession" formControlName="profession" maxlength="100" placeholder="{{ 'recruiting.profession_placeholder' | translate }}"/>
+                                <mat-error *ngIf="postulationForm.invalid">{{getErrorMessage(postulationForm.get('profession'))}}</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="row">
+                            <!-- Genero -->
+                            <div class="col-12 col-md-6 col-xl-3">
+                                <div class="w-100">
+                                    <div class="fw-bold">{{ 'recruiting.gender' | translate }}</div>
+                                    <mat-form-field class="w-100" appearance="standard">
+                                        <mat-select id="gender" formControlName="gender" placeholder="{{ 'recruiting.select_gender' | translate }}">
+                                        <mat-option *ngFor="let gender of genders " [value]="gender.value">
+                                            {{ gender.label | translate }}
+                                        </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="postulationForm.invalid">{{getErrorMessage(postulationForm.get('gender'))}}</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <!-- Fecha de nacimiento -->
+                            <div class="col-12 col-md-6 col-xl-3">
+                                <div class="w-100">
+                                    <div class="fw-bold">{{ 'recruiting.birth_date' | translate }}</div>
+                                </div>
+                                <mat-form-field class="w-100" appearance="standard">
+                                    <input matInput #interviewDate id="birthDate" formControlName="birthDate"
+                                        [value]="postulationForm.get('birthDate')?.value" [max]="maxDate" [matDatepicker]="picker">
+                                    <mat-datepicker-toggle matSuffix [for]="picker" class="date-picker-icon"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                    <mat-error
+                                        *ngIf="postulationForm.invalid && postulationForm.get('birthDate')">
+                                        {{getErrorMessage(postulationForm.get('birthDate'))}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <!-- Plataforma de pstulación -->
+                            <div class="col-12 col-md-12 col-xl-6">
+                                <div class="w-100">
+                                    <div class="fw-bold">{{ 'recruiting.platform_question' | translate }}</div>
+                                    <mat-form-field class="w-100" appearance="standard">
+                                        <mat-select id="platform" formControlName="platform" placeholder="{{ 'recruiting.select_option' | translate }}" (selectionChange)="validatePlatform()">
+                                            <mat-option *ngFor="let platform of platforms " [value]="platform.name">
+                                                {{ platform.name | translate }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="postulationForm.invalid">{{getErrorMessage(postulationForm.get('platform'))}}</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <!-- Campo descripción de OTRO en medio de postulación -->
+                            <div class="w-100" *ngIf="postulationForm.get('platform')?.value == 'recruiting.other'">
+                                <div class="fw-bold">{{ 'recruiting.other_platform_description' | translate }}</div>
+                                <mat-form-field class="w-100" appearance="standard">
+                                    <input matInput type="text" id="other_platform_description" formControlName="other_platform_description" placeholder="{{ 'recruiting.other_platform_placeholder' | translate }}"/>
+                                    <mat-error *ngIf="postulationForm.invalid">{{getErrorMessage(postulationForm.get('other_platform_description'))}}</mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
+                <!-- Educación y formación -->
+                <mat-card class="ps-lg-5 form-card">
+                    <mat-card-content>
+                        <p class="fw-bold"><span class="text-danger">*</span> {{ 'recruiting.education' | translate }}</p>
+                    </mat-card-content>
+                    <mat-card-content class="ms-lg-3">
+                        <div class="w-100">
+                            <mat-form-field class="w-100" appearance="standard">
+                                <textarea matInput id="education" formControlName="education" cdkTextareaAutosize cdkAutosizeMaxRows="5" minlength="3" maxlength="1000" placeholder="{{ 'recruiting.education_candidate_placeholder' | translate }}"></textarea>
+                                <mat-error *ngIf="postulationForm.invalid">{{getErrorMessage(postulationForm.get('education'))}}</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
+                <!-- Experiencia -->
+                <mat-card class="ps-lg-5 form-card">
+                    <mat-card-content>
+                        <p class="m-0 fw-bold"><span class="text-danger" *ngIf="vacant.experience != 'WITHOUT_EXPERIENCE'">*</span> {{ 'recruiting.experience' | translate | uppercase }}</p>
+                        <p class="text-muted">{{ 'recruiting.experience_subtitle' | translate }}</p>
+                    </mat-card-content>
+                    <mat-card-content class="ms-lg-3">
+                        <form [formGroup]="experienceForm">
+                            <div class="row">
+                                <!-- cantidad de tiempo -->
+                                <div class="col-12 col-md-5 mb-3">
+                                    <div class="fw-bold mb-3">{{ 'recruiting.experience_years' | translate }}</div>
+                                    <mat-radio-group class="experience-radio-group" formControlName="quantity">
+                                        <mat-radio-button *ngFor="let experience of experiences" [value]="experience.label">{{ experience.label | translate }}</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                                <!-- cargo y descripción -->
+                                <div class="col-12 col-md-7">
+                                    <div class="fw-bold">{{ 'recruiting.experience_position' | translate }}</div>
+                                    <mat-form-field class="w-100" appearance="standard">
+                                        <input matInput type="text" id="title" formControlName="title" maxlength="100" placeholder="{{ 'recruiting.experience_position_placeholder' | translate }}"/>
+                                        <mat-error *ngIf="experienceForm.invalid">{{getErrorMessage(experienceForm.get('title'))}}</mat-error>
+                                    </mat-form-field>
+                                    <div class="fw-bold">{{ 'recruiting.experience_description' | translate }}</div>
+                                    <mat-form-field class="w-100" appearance="standard">
+                                        <textarea matInput id="description" formControlName="description" cdkTextareaAutosize cdkAutosizeMaxRows="3"  minlength="3" maxlength="500" placeholder="{{ 'recruiting.experience_description_placeholder' | translate }}"></textarea>
+                                        <mat-error *ngIf="experienceForm.invalid">{{getErrorMessage(experienceForm.get('description'))}}</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <!-- Boton de agregar -->
+                                <div class="col-12 d-flex justify-content-end">
+                                    <button mat-button (click)="addExperience()" [disabled]="experienceForm.invalid || candidateExperiences.length > 7">
+                                        <span>+ {{ 'recruiting.add_experience' | translate }}</span>
+                                    </button>
+                                </div>
+                                <!-- Listado de experiencias -->
+                                <div class="col-12">
+                                    <p class="mt-5 text-center" *ngIf="vacant.experience != 'WITHOUT_EXPERIENCE' && candidateExperiences.length == 0"><b>{{ 'recruiting.no_experiences_added' | translate }}</b></p>
+                                    <ul>
+                                        <li *ngFor="let experience of candidateExperiences">{{ experience }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </form>
+                    </mat-card-content>
+                </mat-card>
+
+                <!-- Habilidades -->
+                <mat-card class="ps-lg-5 form-card">
+                    <mat-card-content>
+                        <p class="m-0 fw-bold"><span class="text-danger">*</span> {{ 'recruiting.skills' | translate }}</p>
+                        <p class="text-muted">{{ 'recruiting.skills_candidate_subtitle' | translate }}</p>
+                    </mat-card-content>
+                    <mat-card-content class="ms-lg-3">
+                        <mat-chip-list [multiple]="true">
+                            <mat-chip *ngFor="let skill of vacant.skills" [selected]="validateSkill(skill)" (click)="selectSkill(skill)">{{ skill.skill.name }}</mat-chip>
+                        </mat-chip-list>
+                    </mat-card-content>
+                </mat-card>
+
+                <!-- Info adicional -->
+                <mat-card class="ps-lg-5 form-card" *ngIf="itemsFormArray.controls.length > 0">
+                    <mat-card-content>
+                        <p class="fw-bold"><span class="text-danger">*</span> {{ 'recruiting.additional_info' | translate }}</p>
+                    </mat-card-content>
+                    <mat-card-content class="ms-lg-3">
+                        <!-- nombre -->
+                        <form class="w-100" *ngFor="let item of itemsFormArray.controls; let i = index;" [formGroup]="getFormGroup(item)">
+                            <p class="m-0 fw-bold">{{ item.get('name')?.value }}</p>
+                            <p class="m-0 text-muted">{{ item.get('description')?.value }}</p>
+                            <mat-form-field class="w-100" appearance="standard">
+                                <textarea matInput formControlName="response" cdkTextareaAutosize cdkAutosizeMaxRows="5" minlength="3" maxlength="500" placeholder="{{ 'recruiting.item_response_placeholder' | translate }}"></textarea>
+                                <mat-error *ngIf="item.invalid">{{getErrorMessage(item.get('response'))}}</mat-error>
+                            </mat-form-field>
+                        </form>
+                    </mat-card-content>
+                </mat-card>
+
+                 <!-- Anexos-->
+                <mat-card class="ps-lg-5 form-card">
+                    <mat-card-content>
+                        <p class="fw-bold">{{ 'recruiting.attachment_appendix_title' | translate }}</p>
+                        <p class="text-muted">{{ 'recruiting.attachment_appendix_subtitle' | translate }}</p>
+                    </mat-card-content>
+                    <mat-card-content class="ms-lg-3">
+                        <!-- nombre -->
+                        <div class="w-100 text-center">
+                            <app-attachment-upload [(attachmentFormGroup)]="attachmentAppendixFG" attachmentControlName="attachmentAppendix" [showTitle]="false"  
+                                [sizeAllow]="10" [sizeTypeAllow]="'mb'" [listAllowFiles]="listAllowedFilesAppendix">
+                            </app-attachment-upload>
+                        </div>
+                  
+                    <!-- Campo para Link -->
+                    
+                        <div class="fw-bold mt-3">{{ 'recruiting.link_appendix_title' | translate }}</div>
+                        <mat-form-field class="w-100" appearance="standard">
+                            <input matInput type="text" id="title" formControlName="link" maxlength="300" placeholder="{{ 'recruiting.link_appendix_placeholder' | translate }}"
+                            pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:\/?#[\]@!\$&'\(\)\*\+,;=.%]+$"/>
+                            <mat-error *ngIf="postulationForm.invalid">{{getErrorMessage(postulationForm.get('link'))}}</mat-error>
+                        </mat-form-field>
+                    
+                   </mat-card-content>
+                </mat-card>
+
+                <!-- Foto -->
+                <mat-card class="ps-lg-5 form-card">
+                    <mat-card-content>
+                        <p class="fw-bold">{{ 'recruiting.load_photo' | translate }}</p>
+                    </mat-card-content>
+                    <mat-card-content class="ms-lg-3">
+                        <!-- nombre -->
+                        <div class="w-100 text-center">
+                            <app-attachment-upload [(attachmentFormGroup)]="attachmentFG" attachmentControlName="attachment" [showTitle]="false"  
+                                [sizeAllow]="10" [sizeTypeAllow]="'mb'" [listAllowFiles]="listAllowedFiles">
+                            </app-attachment-upload>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </form>
+
+            <!-- Protección de datos -->
+            <div class="row ps-lg-5">
+                <div class="col-12">
+                    <p class="fw-bold"><span class="text-danger">*</span> {{ 'recruiting.data_protection' | translate }}</p>
+                    <p>
+                        <mat-checkbox [checked]="politicsAccepted" [(ngModel)]="politicsAccepted"></mat-checkbox>
+                        {{ 'recruiting.privacy_policy' | translate }}
+                        <a href="https://storage-angular-s3.s3.amazonaws.com/Politica+tratamiento+de+datos+personales+-+Ascendo.pdf" target="_blank">
+                            https://acsendo.com/politica</a>
+                    </p>
+                </div>
+                <div class="col-12 mt-3">
+                    <p *ngIf="vacant.showCompanyInfo">
+                        {{ 'recruiting.privacy_description_begin' | translate }} {{ 'generaldashboard.y_letter' | translate }} 
+                        {{ vacant.company.name }}, {{ 'recruiting.privacy_description_end' | translate }}
+                    </p>
+
+                    <p *ngIf="!vacant.showCompanyInfo">
+                        {{ 'recruiting.privacy_description_begin' | translate }}, 
+                        {{ 'recruiting.privacy_description_end' | translate }}
+                    </p>
+                </div>
+                <!-- Botones -->
+                <div class="col-12 d-flex justify-content-end">
+                    <button mat-flat-button *ngIf="!savingData" color="primary" [disabled]="validateForm()" (click)="sendPostulation()">{{ 'common.send' | translate }}</button>
+                    <!-- spinner de carga -->
+                    <mat-spinner *ngIf="savingData" id="spinnerLoader" [diameter]="50"></mat-spinner>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

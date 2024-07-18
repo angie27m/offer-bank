@@ -1,0 +1,24 @@
+<div *ngIf="data">
+    <div class="p-3">
+        <div class="row">
+          <div class="col-1">
+              <div *ngIf="data.type == 'panel-warn-message'">
+              <img width="25" height="25" src="/assets/imgs/alert-message/warn_icon.svg">
+              </div>
+              <div *ngIf="data.type == 'panel-error-message'">
+               <img width="25" height="25" src="/assets/imgs/alert-message/error-icon.svg">
+            </div>
+            <div *ngIf="data.type == 'panel-success-message'">
+                <img width="25" height="25" src="/assets/imgs/alert-message/ok-icon.svg" />
+            </div>
+          </div>
+          <div class="col-10">
+              <div class="fw-extrabold mb-10">{{ data.title }}</div>
+              <div class="fw-normal" [innerHtml]="data.subtitle"></div>
+          </div>
+          <div class="col-1 alertmsg-dismiss-container {{data.type}}-iconx d-flex justify-content-end">
+              <a (click)="dismiss()"><mat-icon>close</mat-icon></a>
+          </div>
+        </div>
+    </div>
+</div>

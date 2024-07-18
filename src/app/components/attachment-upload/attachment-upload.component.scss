@@ -1,0 +1,18 @@
+.attachment-box-add {
+    background-color: rgba( var(--primary), 0.1); 
+    border: 2px dashed var(--primary);
+    border-radius:0.25rem;
+    cursor: pointer;
+    img {
+        width: 15px;
+        height: 15px;
+    }
+    span {
+        color: var(--primary);
+    }
+}
+.upload-icon {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin: 5px;
+}

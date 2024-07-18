@@ -1,0 +1,95 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: 'Work Sans', sans-serif; }
+
+.font-color-primary {
+    color: var(--primary);
+}
+
+/* Estilos para los mensajes de alerta */
+.panel-success-message {
+    color: #BDD262;
+    font-weight: bold;
+    background-color: #F2F6E0;
+    border: 2px solid #BDD262;
+    box-sizing: border-box;
+    border-radius: 2px;
+    min-width: 77vw !important;
+}
+.panel-success-message .mat-simple-snackbar-action .mat-button {
+    color: #BDD262 !important;
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: -13px;
+    margin-right: -10px;
+    &.mat-snack-bar-container {
+        margin: 0px 24px;
+    }
+}
+
+.panel-warn-message {
+    color: #FFC554;
+    font-weight: bold;
+    background: #fffdce;
+    border: 2px solid #FFC554;
+    box-sizing: border-box;
+    border-radius: 2px;
+    min-width: 77vw !important;
+}
+
+.panel-warn-message .mat-simple-snackbar-action .mat-button {
+    color: #FFC554 !important;
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: -13px;
+    margin-right: -10px;
+    &.mat-snack-bar-container {
+        margin: 0px 24px;
+    }
+}
+
+.panel-error-message {
+    color: #E46053;
+    font-weight: bold;
+    background: #ffc6c0;
+    border: 2px solid #E46053;
+    box-sizing: border-box;
+    border-radius: 2px;
+    min-width: 77vw !important;
+}
+
+.panel-error-message .mat-simple-snackbar-action .mat-button {
+    color: #E46053 !important;
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: -13px;
+    margin-right: -10px;
+    &.mat-snack-bar-container {
+        margin: 0px 24px;
+    }
+}
+
+.alertmsg-dismiss-container {
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
+    &.panel-success-message-iconx{
+        a {
+            color: #BDD262;
+            font-size: 1.5rem;
+        }
+    }
+    &.panel-warn-message-iconx{
+        a {
+            color: #FFC554;
+            font-size: 1.5rem;
+        }
+    }
+    &.panel-error-message-iconx{
+        a {
+            color: #E46053;
+            font-size: 1.5rem;
+        }
+    }
+}
